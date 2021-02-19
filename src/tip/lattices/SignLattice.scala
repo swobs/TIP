@@ -92,4 +92,10 @@ object SignLattice extends FlatLattice[SignElement.Value] with LatticeWithOps {
   def eqq(a: Element, b: Element): Element = lookup(absEq, a, b)
 
   def gt(a: Element, b: Element): Element = lookup(absGt, a, b)
+
+  // TW: Implement a method in TIP that can check whether an operation as defined in the absPlus, absMinus, etc. tables in SignLattice in SignLattice.scala is monotone. (Optional: add a test script to test that all the tables in SignLattice are monotone.)
+
+  def checkMonotonicity(op: (Element, Element) => Element, a: Element, b: Element, ap: Element, bp: Element) : Boolean =
+    return signValues(ap) <= signValues(a) && signValues(bp) <= signValues(b) && signValues(op(ap, bp)) <= signValues(op(a, b))
+
 }

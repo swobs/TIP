@@ -117,11 +117,11 @@ class TypeAnalysis(program: AProgram)(implicit declData: DeclarationData) extend
           case dw: ADerefWrite => unify(dw.exp, PointerType(as.right)) //DONE
           case dfw: ADirectFieldWrite =>
             unify(dfw.id, RecordType(allFieldNames.map { f =>
-              if (f ==dfw.field) as.right: Term[Type] else FreshVarType()
+              if (f == dfw.field) as.right: Term[Type] else FreshVarType()
             })) // DONE, exercise 3.19
           case ifw: AIndirectFieldWrite =>
             unify(ifw.exp, PointerType(RecordType(allFieldNames.map { f =>
-              if (f ==dfw.field) as.right: Term[Type] else FreshVarType()
+              if (f == ifw.field) as.right: Term[Type] else FreshVarType()
             }))) // DONE, exercise 3.19
         }
       case bin: ABinaryOp =>
@@ -145,7 +145,7 @@ class TypeAnalysis(program: AProgram)(implicit declData: DeclarationData) extend
       case alloc: AAlloc => unify(alloc, PointerType(alloc.exp)) // DONE
       case ref: AVarRef => unify(ref, PointerType(ref.id)) // DONE
       case _: ANull => unify(_, PointerType(FreshVarType())) // DONE
-      case fun: AFunDeclaration => unify(fun, FunctionType(fun.params, fun)) // DONE
+      case fun: AFunDeclaration => unify(fun, FunctionType(fun.params, fun.stmts.ret.exp)) // DONE: TODO
       case call: ACallFuncExpr => unify(call.targetFun, FunctionType(call.args, call)) // DONE
       case _: AReturnStmt =>
       case rec: ARecord =>

@@ -72,6 +72,9 @@ class SimpleSignAnalysis(cfg: ProgramCfg)(implicit declData: DeclarationData) ex
   /**
     * Transfer functions for the different kinds of statements.
     */
+    // TW: SPA: p. 52ff
+    // join(n: CfgNode, o: lattice.Element): lattice.sublattice.Element
+    // eval(exp: AExpr, env: statelattice.Element): valuelattice.Element
   def localTransfer(n: CfgNode, s: statelattice.Element): statelattice.Element = {
     NoPointers.assertContainsNode(n.data)
     NoCalls.assertContainsNode(n.data)
@@ -79,12 +82,19 @@ class SimpleSignAnalysis(cfg: ProgramCfg)(implicit declData: DeclarationData) ex
     n match {
       case r: CfgStmtNode =>
         r.data match {
-          // var declarations
-          case varr: AVarStmt => ??? //<--- Complete here
-
-          // assignments
-          case AAssignStmt(id: AIdentifier, right, _) => ??? //<--- Complete here
-
+          // var declarations TW: join(v)[x_1 -> top, ...]
+          // 1st parameter of join: CfgNode, n
+          // 2nd parameter of join: lattice.Element, map from ids to top
+          // I don't think that my solution is correct...
+          // I want to take a statelattice.Element and set the declared variables to top.
+          case varr: AVarStmt => //<--- Complete here
+            join(n, s.top)
+          // assignments TW: join(v)[X -> eval(join(v), E)]
+          // 1st parameter of join: CfgNode, n
+          // 2nd parameter of join: evaluation of expression in context of lattice.Element
+          // I don't think that my solution is correct...
+          case AAssignStmt(id: AIdentifier, right, _) => //<--- Complete here
+            join(n, eval(right, join(n, lattice[n])))
           // all others: like no-ops
           case _ => s
         }

@@ -150,9 +150,11 @@ class PowersetLattice[A](ch: A => Boolean) extends Lattice {
 
   type Element = Set[A]
 
-  val bottom: Element = ??? //<--- Complete here
+  // TW: should be empty set
+  val bottom: Element = Set.empty //<--- Complete here
 
-  def lub(x: Element, y: Element): Element = ??? //<--- Complete here
+  // TW: least upper bound (lub) = union
+  def lub(x: Element, y: Element): Element = x.union(y) //<--- Complete here
 }
 
 /**
