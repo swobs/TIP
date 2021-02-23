@@ -14,6 +14,7 @@ object CheckSignTables {
           for (ap <- 0 to a) {
             for (bp <- 0 to b) {
               isMonotone = isMonotone && checkMonotonicity(plus, intValues(a), intValues(b), intValues(ap), intValues(bp))
+              // You could improve this by simple adding a break if isMonotone becomes false (to avoid unnecessary iterations)
             }
           }
         }
