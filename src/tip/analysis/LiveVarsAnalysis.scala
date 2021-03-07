@@ -20,24 +20,42 @@ abstract class LiveVarsAnalysis(cfg: IntraproceduralProgramCfg)(implicit declDat
   NoPointers.assertContainsProgram(cfg.prog)
   NoRecords.assertContainsProgram(cfg.prog)
 
-  def transfer(n: CfgNode, s: lattice.sublattice.Element): lattice.sublattice.Element =
+  def transfer(n: CfgNode, s: lattice.sublattice.Element): lattice.sublattice.Element = {
+    // TW: variable is live at program point p if there exists an execution where its value is read after program point
+    // and variable is not being written to between program point p and being read
+    // for every cfg node n constraint variable [[v]] is subset of variables that are live BEFORE n
+    // (subset may be too large but never too small = sound)
+    // join function joins with constraints of SUCCESSORS of v
+    // why?
+    // if variable x is live at v_2 then it has to be live at v_1, too if v_1 is not an assignment to x
+    // transfer rules: SPA, p. 63f
+    // similar to localTransfer() in SimpleSignAnalysis
     n match {
+      // TW: don't know why there is a type error
+      // maybe some dependency on the last exercise; I just pulled your last feedback...
       case _: CfgFunExitNode => lattice.sublattice.bottom
       case r: CfgStmtNode =>
         r.data match {
-          case cond: AExpr => ??? //<--- Complete here
+          // TW: union of s with vars appearing in expression
+          case cond: AExpr => s + set of vars ??? //<--- Complete here
           case as: AAssignStmt =>
             as.left match {
-              case id: AIdentifier => ??? //<--- Complete here
-              case _ => ???
+              // TW: union of set difference s \ id with vars appearing in expression on right hand side
+              case id: AIdentifier => s - id + set of vars ??? //<--- Complete here
+              // TW: other nodes: [[v]] = join(v) = s
+              case _ => s
             }
-          case varr: AVarStmt => ??? //<--- Complete here
-          case ret: AReturnStmt => ??? //<--- Complete here
-          case out: AOutputStmt => ??? //<--- Complete here
+          // TW: [[v]] = join(v) \ set of vars
+          case varr: AVarStmt => s + set of vars ??? //<--- Complete here
+          // TW: union of s with vars appearing in expression; I think that was the missing rule in SPA lecture notes
+          case ret: AReturnStmt => s + set of vars ??? //<--- Complete here
+          // TW: union of s with vars appearing in expression
+          case out: AOutputStmt => s + set of vars ??? //<--- Complete here
           case _ => s
         }
       case _ => s
     }
+  }
 }
 
 /**
