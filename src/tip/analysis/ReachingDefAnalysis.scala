@@ -34,6 +34,7 @@ abstract class ReachingDefAnalysis(cfg: IntraproceduralProgramCfg)(implicit decl
           case as: AAssignStmt =>
             as.left match {
               // TW: union of set difference s \ old assignment of id and as (actual assignment for id)
+                // HP: you can use filtet to just keep from s the ones one the appearingIds are not a super set (is gonna be a singleton, but the method returns a set) of the appearingIds of id
               case id: AIdentifier => s - ... + as ??? //<--- Complete here
               // TW: other nodes: [[v]] = join(v) = s
               case _ => s

@@ -37,6 +37,7 @@ abstract class LiveVarsAnalysis(cfg: IntraproceduralProgramCfg)(implicit declDat
       case r: CfgStmtNode =>
         r.data match {
           // TW: union of s with vars appearing in expression
+            // HP: for "set of vars" you can use "appearingIds"
           case cond: AExpr => s + set of vars ??? //<--- Complete here
           case as: AAssignStmt =>
             as.left match {
@@ -48,6 +49,7 @@ abstract class LiveVarsAnalysis(cfg: IntraproceduralProgramCfg)(implicit declDat
           // TW: [[v]] = join(v) \ set of vars
           case varr: AVarStmt => s + set of vars ??? //<--- Complete here
           // TW: union of s with vars appearing in expression; I think that was the missing rule in SPA lecture notes
+            // The rule was added in the slides. However, since return does not have a sucessor, the rule is "Vars(E)" instead of "s + Vars(E)"
           case ret: AReturnStmt => s + set of vars ??? //<--- Complete here
           // TW: union of s with vars appearing in expression
           case out: AOutputStmt => s + set of vars ??? //<--- Complete here
