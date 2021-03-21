@@ -126,9 +126,18 @@ trait InterprocValueAnalysisFunctions[L <: LatticeWithOps] extends MapLiftLattic
 
     n match {
       // function entry nodes
+      // TW: I'm unsure what to do here...
+      // we discussed sign analysis, constant propagation analysis, interval analysis, but no "value analysis"
+      // I think, it depends on the analysis what we do at function entry and after-call nodes
+      // for sign analysis we would join s_w, where s_w is an abstract state
+      // (bottom with updates for function parameters evaluated in context of abstract states of predecessors)
+      // general question: can you show where the "transformation of the CFG"
+      // (call node, after-call node, assignment to result) happens?
       case funentry: CfgFunEntryNode => ??? //<--- Complete here
 
       // after-call nodes
+      // TW: same as above...
+      // for sign analysis, update abstract state of call node by mapping result in context of function exit node to X
       case aftercall: CfgAfterCallNode => ??? //<--- Complete here
 
       // return node
